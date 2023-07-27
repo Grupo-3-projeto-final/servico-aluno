@@ -13,7 +13,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IAlunoService, AlunoSevice>();
-builder.Services.AddScoped<IBoletoService, BoletoService>();
+builder.Services.AddScoped<IBoletoAlunoService, BoletoAlunoService>();
 
 builder.Services.AddScoped<IAlunoRepository, AlunoRepository>();
 
