@@ -60,7 +60,7 @@ namespace servico_aluno.Infrastructure.Services
             HttpClient httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            string url = $"{_configuration["URLPagamentoService"]}/pagamento/gerar-url";
+            string url = $"{Environment.GetEnvironmentVariable("URLPagamentoService")}/pagamento/gerar-url";
 
             var response = await httpClient.PostAsync(url, content);
             response.EnsureSuccessStatusCode();

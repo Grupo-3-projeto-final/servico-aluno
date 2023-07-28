@@ -8,7 +8,7 @@ using servico_aluno.Infrastructure.Services.Interfaces;
 namespace servico_aluno.Controllers;
 
 [ApiController]
-[Authentication]
+//[Authentication]
 [Route("[controller]")]
 public class PagamentoAlunoController : ControllerBase
 {
@@ -29,7 +29,7 @@ public class PagamentoAlunoController : ControllerBase
     }
 
     [HttpPost]
-    [Authorization(Role = "Administrator")]
+    //[Authorization(Role = "Administrator")]
     [Route("atualizar-status")]
     public async Task<ActionResult> BaixarBoletoAluno(StudentStatusPaymentDto studentStatusPayment)
     {
