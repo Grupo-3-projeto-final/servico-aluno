@@ -1,16 +1,27 @@
-﻿using static System.Runtime.InteropServices.JavaScript.JSType;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace servico_aluno.Domain.ModelViews
+namespace servico_aluno.Domain.Entities
 {
-    public class Aluno
+    public class Student
     {
-        public int CodigoAluno { get; set; }
-        public string NomeAluno { get; set; }
+        public int StudentId { get; set; }
+
+        [Required]
+        public string Name { get; set; }
+
+        [Required]
+        [MinLength(11)]
         public string Cpf { get; set; }
+
+        [Required]
         public string Email { get; set; }
-        public Date DataNascimento { get; set; }
-        public int CodigoCurso { get; set; }
-        public bool PagamentoRealizado { get; set; }
+
+        public DateTime DateBirth { get; set; }
+
+        [Required]
+        public int CourseId { get; set; }
+
+        public bool Enabled { get; set; }
 
         public bool ValidarCPF()
         {

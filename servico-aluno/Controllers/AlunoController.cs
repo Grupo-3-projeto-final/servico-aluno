@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using servico_aluno.Domain.DTO;
+using servico_aluno.Domain.Entities;
 using servico_aluno.Domain.ModelViews;
 using servico_aluno.Infrastructure.Services;
 using servico_aluno.Infrastructure.Services.Interfaces;
@@ -10,49 +12,72 @@ namespace servico_aluno.Controllers;
 public class AlunoController : ControllerBase
 {
     private readonly ILogger<AlunoController> _logger;
-    private readonly IAlunoService _alunoService;
+    private readonly IStudentService _alunoService;
+    private readonly LoginService _loginService;
     public AlunoController(
         ILogger<AlunoController> logger,
-        IAlunoService alunoService)
+        IStudentService alunoService,
+        LoginService loginService)
     {
         _logger = logger;
         _alunoService = alunoService;
+        _loginService = loginService;
     }
 
     [HttpGet]
-    [ProducesResponseType(typeof(Task<IEnumerable<Aluno>>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(Exception), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(Exception), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<IEnumerable<Aluno>>> BuscarAluno()
+    public async Task<ActionResult<IEnumerable<Student>>> BuscarAluno()
     {
-        return Ok(await _alunoService.BuscarAlunos());
+        try
+        {
+            return Ok(await _alunoService.BuscarAlunos());
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 
-    [HttpGet]
-    [Route("{codigoAluno}")]
-    [ProducesResponseType(typeof(Aluno), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(Exception), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(Exception), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<Aluno>> BuscarAluno(int codigoAluno)
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Student>> BuscarAluno(int id)
     {
-        return Ok(await _alunoService.BuscarAluno(codigoAluno));
+        try
+        {
+            return Ok(await _alunoService.BuscarAluno(id));
+        }
+        catch(Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 
     [HttpPost]
-    [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(Exception), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(Exception), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<bool>> SalvarAluno([FromBody] Aluno aluno)
+    public async Task<ActionResult> SalvarAluno([FromBody] StudentRequestDto aluno)
     {
-        return Ok(await _alunoService.SalvarAluno(aluno));
-    }
-    [HttpDelete]
-    [Route("{codigoAluno}")]
-    [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(Exception), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(Exception), StatusCodes.Status500InternalServerError)]
-    public void DeletarAlunoPorCodigo()
-    {
+        try
+        {
+            var alunoCreated = await _alunoService.SalvarAluno(aluno);
+            return CreatedAtAction(nameof(SalvarAluno), new { id = alunoCreated.StudentId }, alunoCreated);
+        }
+        catch (Exception ex) 
+        {
+            return BadRequest(ex.Message);
+        }
+       
 
+    }
+
+    [HttpGet]
+    [Route("teste")]
+    public async Task<ActionResult<IEnumerable<Student>>> TesteLogin()
+    {
+        try
+        {
+            _loginService.login();
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 };

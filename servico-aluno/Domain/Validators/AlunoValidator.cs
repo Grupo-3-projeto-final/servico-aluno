@@ -1,15 +1,16 @@
 ﻿using FluentValidation;
+using servico_aluno.Domain.Entities;
 using servico_aluno.Domain.ModelViews;
 using servico_aluno.Infrastructure.Repositories.Interfaces;
 
 namespace servico_aluno.Domain.Validators
 {
-    public class AlunoValidator : AbstractValidator<Aluno>
+    public class AlunoValidator : AbstractValidator<Student>
     {
         public AlunoValidator() 
         {
 
-            RuleFor(x => x.NomeAluno)
+            RuleFor(x => x.Name)
                 .NotEmpty()
                 .WithMessage("Favor informar o nome do aluno");
 
@@ -19,7 +20,7 @@ namespace servico_aluno.Domain.Validators
                 .NotEmpty()
                 .WithMessage("Favor informar o CPF");
 
-            RuleFor(x => x.CodigoCurso)
+            RuleFor(x => x.CourseId)
                 .NotNull()
                 .NotEmpty()
                 .LessThanOrEqualTo(0)

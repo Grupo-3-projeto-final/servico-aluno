@@ -1,7 +1,10 @@
 {
   "ExpandedNodes": [
     "",
-    "\\servicoAlunos"
+    "\\servico-aluno",
+    "\\servico-aluno\\Infrastructure",
+    "\\servico-aluno\\Infrastructure\\Services"
   ],
+  "SelectedNode": "\\servico-aluno\\Infrastructure\\Services\\AlunoSevice.cs",
   "PreviewInSolutionExplorer": false
 }

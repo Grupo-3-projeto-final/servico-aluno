@@ -1,63 +1,66 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using servico_aluno.Domain.DTO;
+using servico_aluno.Domain.Entities;
 using servico_aluno.Domain.ModelViews;
 using servico_aluno.Domain.Validators;
 using servico_aluno.Infrastructure.Repositories.Interfaces;
 using servico_aluno.Infrastructure.Services.Interfaces;
+using System.Net;
 
 namespace servico_aluno.Infrastructure.Services;
 
-public class AlunoSevice : IAlunoService
+public class AlunoSevice : IStudentService
 {
-    private readonly IAlunoRepository _alunoRepository;
+    private readonly IStudentRepository _alunoRepository;
+    private readonly ICourseService _courseService;
+    private readonly IMapper _mapper;
 
-    public AlunoSevice(IAlunoRepository alunoRepository)
+    public AlunoSevice(IStudentRepository alunoRepository, IMapper mapper, ICourseService courseService)
     {
         _alunoRepository = alunoRepository;
+        _mapper = mapper;
+        _courseService = courseService;
     }
 
-    public async Task<IEnumerable<Aluno>> BuscarAlunos()
+    public async Task<IEnumerable<StudentResponseDto>> BuscarAlunos()
     {
         return null;
     }
-    public async Task<Aluno> BuscarAluno(int codigoAluno)
+    public async Task<StudentResponseDto> BuscarAluno(int codigoAluno)
     {
         if (codigoAluno <= 0)
-            throw new Exception("Codigo do aluno informado inexistente");
+            throw new Exception();
 
-        Aluno aluno = new Aluno();
+        var aluno = await _alunoRepository.GetById(codigoAluno);
 
         //Criar logica para recuperar aluno
-        return aluno;
+        return _mapper.Map<StudentResponseDto>(aluno);
     }
-    public async Task<bool> SalvarAluno(Aluno aluno)
+    public async Task<StudentResponseDto> SalvarAluno(StudentRequestDto alunoDto)
     {
+        var aluno = _mapper.Map<Student>(alunoDto);
+
+        var courseRequest = new CourseRequestDto
+        {
+            CourseId = alunoDto.CourseId,
+            Name = alunoDto.CourseName
+        };
+
+        _courseService.Save(courseRequest);
+
         if (!aluno.ValidarCPF())
             throw new Exception("CPF inválido");
 
-        new AlunoValidator().Validate(aluno,
-            Erros =>
-        {
-            throw new Exception("Parâmetro informado incorretamente. Mensagem: " + Erros.ToString());
-        });
+        var alunoResult = await _alunoRepository.Save(aluno);
 
-        //chamar o metodo repositorio para salvar o aluno no banco
-
-        return true;
+        return _mapper.Map<StudentResponseDto>(alunoResult);
     }
-    public void DeletarAlunoPorId()
+
+    public async Task RealizarPagamentoBoleto(StudentStatusPaymentDto aluno)
     {
-
+        await _alunoRepository.UpdateEnabledStudent(aluno.IdAluno);
     }
 
-    public async Task<bool> RealizarPagamentoBoleto(Aluno aluno)
-    {
-        if (aluno == null)
-            throw new Exception("CPF inválido");
-
-        //Chamar metodo repositorio para realizar update do aluno para pago
-
-        return true;
-    }
 }
 
