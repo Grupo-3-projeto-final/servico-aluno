@@ -18,18 +18,14 @@ namespace servico_aluno.Domain.Queue.Consumer
 
         public SqsConsumerService()
         {
-            _configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json")
-                .Build();
 
-            if (string.IsNullOrEmpty(_configuration["awsAccessKey"]) || string.IsNullOrEmpty(_configuration["awsSecretKey"]) || string.IsNullOrEmpty(_configuration["awsRegion"]))
+            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("awsAccessKey")) || string.IsNullOrEmpty(Environment.GetEnvironmentVariable("awsSecretKey")) || string.IsNullOrEmpty(Environment.GetEnvironmentVariable("awsRegion")))
             {
                 throw new Exception("Missing AWS environment variables");
             }
 
-            var awsCredentials = new Amazon.Runtime.BasicAWSCredentials(_configuration["awsAccessKey"], _configuration["awsSecretKey"]);
-            var config = new AmazonSQSConfig { RegionEndpoint = RegionEndpoint.GetBySystemName(_configuration["awsRegion"]) };
+            var awsCredentials = new Amazon.Runtime.BasicAWSCredentials(Environment.GetEnvironmentVariable("awsAccessKey"), Environment.GetEnvironmentVariable("awsSecretKey"));
+            var config = new AmazonSQSConfig { RegionEndpoint = RegionEndpoint.GetBySystemName(Environment.GetEnvironmentVariable("awsAccessKey")) };
             _sqsClient = new AmazonSQSClient(awsCredentials, config);
             _producerService = new SqsProducerService();
             //_avaliacaoService = new AvaliacaoService(_producerService);
@@ -39,7 +35,7 @@ namespace servico_aluno.Domain.Queue.Consumer
         {
             var receiveMessageRequest = new ReceiveMessageRequest
             {
-                QueueUrl = _configuration["QueueUrlConsomer"],
+                QueueUrl = Environment.GetEnvironmentVariable("QueueUrlConsomer"),
                 MaxNumberOfMessages = 10,
                 WaitTimeSeconds = 20,
                 VisibilityTimeout = 60

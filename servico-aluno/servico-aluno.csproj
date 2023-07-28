@@ -32,4 +32,10 @@
     <None Include="Domain\Entities\Assessment.cs" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="IdentityLib">
+      <HintPath>libs\IdentityLib.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

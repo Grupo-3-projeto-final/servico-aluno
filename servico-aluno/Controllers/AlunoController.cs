@@ -1,3 +1,4 @@
+using IdentityGama.Filters;
 using Microsoft.AspNetCore.Mvc;
 using servico_aluno.Domain.DTO;
 using servico_aluno.Domain.Entities;
@@ -8,6 +9,7 @@ using servico_aluno.Infrastructure.Services.Interfaces;
 namespace servico_aluno.Controllers;
 
 [ApiController]
+[Authentication]
 [Route("[controller]")]
 public class AlunoController : ControllerBase
 {

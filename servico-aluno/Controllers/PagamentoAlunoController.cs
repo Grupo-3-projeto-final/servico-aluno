@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using IdentityGama.Filters;
+using Microsoft.AspNetCore.Mvc;
 using servico_aluno.Domain.DTO;
 using servico_aluno.Domain.Enum;
 using servico_aluno.Infrastructure.Services;
@@ -7,6 +8,7 @@ using servico_aluno.Infrastructure.Services.Interfaces;
 namespace servico_aluno.Controllers;
 
 [ApiController]
+[Authentication]
 [Route("[controller]")]
 public class PagamentoAlunoController : ControllerBase
 {
@@ -27,6 +29,7 @@ public class PagamentoAlunoController : ControllerBase
     }
 
     [HttpPost]
+    [Authorization(Role = "Administrator")]
     [Route("atualizar-status")]
     public async Task<ActionResult> BaixarBoletoAluno(StudentStatusPaymentDto studentStatusPayment)
     {
